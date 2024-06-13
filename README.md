@@ -11,6 +11,6 @@ I personally have not been baned using it. However, use at your own risk.
 * Download source code of Pyhl
 * Run `pip install -r requirements.txt`
 * Move PyMeow.pyd into same folder as Pyhl
-* Run `main.py`
+* Run `main.py` or 'headlock.py'
 
   
