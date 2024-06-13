@@ -214,9 +214,9 @@ class CoClass:
                 continue
 
             if self.mode == 1:
-                pm.draw_text('ACTIVATED', 1150, 0, 50, Colors.white)
+                pm.draw_text('ON', 1250, 0, 50, Colors.white)
             else:
-                pm.draw_text('DEACTIVATED', 1100, 0, 50, Colors.white)
+                pm.draw_text('OFF', 1200, 0, 50, Colors.white)
 
             if self.gettingId == True:
                 pm.draw_text('Getting Players IDs...', 50, 0, 20, Colors.white)
