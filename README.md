@@ -1,5 +1,6 @@
 # Pyhl
 A simple cs2 headlock + triggerbot fully written in python without memory writing.
+
 Only work well with unscoped weapons for now.
 
 ## Safe?
