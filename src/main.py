@@ -1,3 +1,11 @@
+# ----------
+# HOW TO USE:
+# LINE 159 CHANGE movePerDegree TO CORRECT VALUE
+# PRESS ALT TO TOGGLE ON / OFF
+# CHANGE TOGGLE KEY ON LINE 72
+# ----------
+
+
 import keyboard, time, threading, sys, random, ctypes, math, os
 from pynput.mouse import Controller, Button
 from win32gui import GetWindowText, GetForegroundWindow
