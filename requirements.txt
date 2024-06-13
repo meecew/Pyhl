@@ -1,0 +1,7 @@
+keyboard
+time
+threading
+pynput
+pywin32-ctypes
+win32gui
+pywin32
