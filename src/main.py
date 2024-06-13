@@ -1,4 +1,4 @@
-import keyboard, time, threading, sys, random, ctypes, math
+import keyboard, time, threading, sys, random, ctypes, math, os
 from pynput.mouse import Controller, Button
 from win32gui import GetWindowText, GetForegroundWindow
  
