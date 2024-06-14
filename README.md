@@ -13,4 +13,3 @@ I personally have not been baned using it. However, use at your own risk.
 * Move PyMeow.pyd into same folder as Pyhl
 * Run `main.py` or `headlock.py`
 
-code is broken right now, does not work on resolution other than 2048*1152
