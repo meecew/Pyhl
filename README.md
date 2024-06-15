@@ -11,5 +11,5 @@ I have not been banned using it. However, use at your own risk.
 * Download source code of Pyhl
 * Run `pip install -r requirements.txt`
 * Move PyMeow.pyd into same folder as Pyhl
-* Run `main.py` or `headlock_with_triggerbot.py`
+* Run `main.py` or `triggerbot_w_hl.py`
 
