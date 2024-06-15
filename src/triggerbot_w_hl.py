@@ -1,9 +1,8 @@
 # ----------
 # HOW TO USE:
-# LINE 58 CHANGE movePerDegree TO CORRECT VALUE
+# LINE 57 CHANGE movePerDegree TO CORRECT VALUE
 # HOLD ALT TO TRACK TARGET
-# V TO SWITCH TARGET
-# CHANGE KEYS ON LINE 60
+# CHANGE KEYS ON LINE 59
 # ----------
 import keyboard, time, threading, ctypes, math, sys, os
 from pynput.mouse import Controller, Button
