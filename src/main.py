@@ -1,21 +1,18 @@
 # ----------
 # HOW TO USE:
-# LINE 64 CHANGE movePerDegree TO CORRECT VALUE
+# LINE 59 CHANGE movePerDegree TO CORRECT VALUE
 # HOLD ALT TO TRACK TARGET
 # V TO SWITCH TARGET
-# CHANGE KEYS ON LINE 69 AND 70
+# CHANGE KEYS ON LINE 61 AND 62
 # ----------
-import keyboard, time, threading, sys, random, ctypes, math
-from pynput.mouse import Controller, Button
+import keyboard, time, threading, sys, ctypes, math, os
+from pynput.mouse import Controller
 from win32gui import GetWindowText, GetForegroundWindow
- 
 from offsets import *
 import pyMeow as pm # type: ignore
 
 mouse = Controller()
 client = Client()
-
-
 
 class Offsets:
     dwEntityList = client.offset('dwEntityList')
@@ -24,12 +21,9 @@ class Offsets:
     dwViewMatrix = client.offset('dwViewMatrix')
     dwViewAngles = client.offset('dwViewAngles')
 
-    m_pGameSceneNode = client.clientdll('C_BaseEntity', 'm_pGameSceneNode')
-    m_vecVelocity = client.clientdll('C_BaseEntity', 'm_vecVelocity')
     m_iIDEntIndex = client.clientdll('C_CSPlayerPawnBase', 'm_iIDEntIndex')
     m_iTeamNum = client.clientdll('C_BaseEntity', 'm_iTeamNum')
     m_iHealth = client.clientdll('C_BaseEntity', 'm_iHealth')
-    m_iszPlayerName = client.clientdll('CBasePlayerController', 'm_iszPlayerName')
     m_hPlayerPawn = client.clientdll('CCSPlayerController', 'm_hPlayerPawn')
     m_vOldOrigin = client.clientdll('C_BasePlayerPawn', 'm_vOldOrigin')
 
@@ -49,29 +43,26 @@ class Entity:
     @property
     def position(self):
         return pm.r_vec3(self.pr, self.entity + Offsets.m_vOldOrigin)
-    
-    @property
-    def velocity(self):
-        return pm.r_float(self.pr, self.entity + Offsets.m_vecVelocity)
+
 
 class Colors:
     white = pm.get_color("white")
     black = pm.get_color("black")
 
-class CoClass:
+class Pyhl:
     def __init__(self):
-        # moveperdegree = 100 / sensitivity * 2.3
-        self.movePerDegree = 100 / 2.3
+        
         self.pr = pm.open_process("cs2.exe") # process
         self.client = pm.get_module(self.pr, "client.dll")["base"] # client starting point
 
+        # moveperdegree = 100 / sensitivity * 2.3
+        self.movePerDegree = 100 / 2.3
         self.mode = 0
         self.triggerKey = "alt"
         self.switchTarget = 'v'
 
         self.gettingId = False
         self.entIdList = []
-        self.temp = 0
         
         print(f"Trigger key: {self.triggerKey.upper()}")
 
@@ -111,17 +102,17 @@ class CoClass:
                                 raise
                             player = pm.r_int64(self.pr, self.client + Offsets.dwLocalPlayerPawn)
                             playerTeam = pm.r_int(self.pr, player + Offsets.m_iTeamNum)
-                            #if ent.team != playerTeam:  # NORMAL MATCHES
-                            if True: # DEATH MATCH
+                            if ent.team != playerTeam:  # NORMAL MATCHES
+                            #if True: # DEATH MATCH
                                 if ent.health > 0:
                                     selfpos = pm.r_vec3(self.pr, player + Offsets.m_vOldOrigin)
                                     self.hl(ent.position, selfpos)
                                 else:
                                     break
                         except:
-                            time.sleep(0.01)
+                            time.sleep(0.02)
 
-                        time.sleep(0.01)
+                        time.sleep(0.02)
                 except:
                     pass
                 
@@ -143,7 +134,6 @@ class CoClass:
         theta = math.asin(sin_theta) * (180/math.pi)
         if entx - selfx < 0:
             theta = 180 - theta
-
         targetYaw = theta 
         while targetYaw > 180:
             targetYaw -= 360
@@ -151,8 +141,6 @@ class CoClass:
             targetYaw += 360
 
         return targetPitch, targetYaw
-
-
 
     def hl(self, entpos, selfpos):
         movePerDegree = self.movePerDegree
@@ -169,8 +157,6 @@ class CoClass:
             ctypes.c_uint(0),
             ctypes.c_uint(0)
         )
-
-            
 
     def paint(self):
         pm.overlay_init(fps=144)
@@ -192,7 +178,6 @@ class CoClass:
             else:
                 pass
 
-
             pm.end_drawing()
             
     def checkEnt(self):
@@ -207,25 +192,12 @@ class CoClass:
                     continue
                 yield Entity(self.pr, entity)
 
-    def checkEnttoo(self):
-        entList = pm.r_int64(self.pr, self.client + Offsets.dwEntityList)
-        for i in self.entIdList:
-            try:
-                entEntry = pm.r_int64(self.pr, entList + 0x8 * (i >> 9) + 0x10)
-                entity = pm.r_int64(self.pr, entEntry + 120 * (i & 0x1FF))
-    
-            except:
-                continue
-            yield Entity(self.pr, entity)
-
-
     def getEntId(self):
         while True:
             if not GetWindowText(GetForegroundWindow()) == "Counter-Strike 2":
                 time.sleep(2)
                 continue
 
-            #if keyboard.is_pressed(self.getEntIdKey):
             if True:
                 self.entIdList = []
                 self.gettingId = True
@@ -234,7 +206,7 @@ class CoClass:
                     playerTeam = pm.r_int(self.pr, player + Offsets.m_iTeamNum)
                 except:
                     pass
-                for i in range(1, 5000):
+                for i in range(1, 10000):
                     try:
                         entList = pm.r_int64(self.pr, self.client + Offsets.dwEntityList)
                         entEntry = pm.r_int64(self.pr, entList + 0x8 * (i >> 9) + 0x10)
@@ -243,30 +215,26 @@ class CoClass:
                         if pm.r_int(self.pr, entity + Offsets.m_iHealth) <= 0:
                             continue
     
-                        #if entTeam != playerTeam:  # NORMAL MATCHES / ONLY ENEMY HP
-                        if True: # DEATH MATCH / TEAM HEALTH
+                        if entTeam != playerTeam:  # NORMAL MATCHES 
+                        #if True: # DEATH MATCH 
                             self.entIdList.append(i)
                     except:
                         pass
                 time.sleep(0.5)
                 self.gettingId = False
 
-            time.sleep(10)
+            time.sleep(20)
 
-   
-        
 if __name__ == '__main__':
     print('Connecting...')
     time.sleep(1)
     os.system('cls')
-    coclass = CoClass()
+    pyhl = Pyhl()
 
-    cet = threading.Thread(target=coclass.getEntId)
-    oot = threading.Thread(target=coclass.onoff)
-    tbt = threading.Thread(target=coclass.triggerBot)
-    pt = threading.Thread(target=coclass.paint)
-
-    
+    cet = threading.Thread(target=pyhl.getEntId)
+    oot = threading.Thread(target=pyhl.onoff)
+    tbt = threading.Thread(target=pyhl.triggerBot)
+    pt = threading.Thread(target=pyhl.paint)
 
     cet.start()
     oot.start()
