@@ -1,21 +1,18 @@
 # ----------
 # HOW TO USE:
-# LINE 69 CHANGE movePerDegree TO CORRECT VALUE
+# LINE 58 CHANGE movePerDegree TO CORRECT VALUE
 # HOLD ALT TO TRACK TARGET
 # V TO SWITCH TARGET
-# CHANGE KEYS ON LINE 71
+# CHANGE KEYS ON LINE 60
 # ----------
 import keyboard, time, threading, ctypes, math, sys, os
 from pynput.mouse import Controller, Button
 from win32gui import GetWindowText, GetForegroundWindow
- 
 from offsets import *
 import pyMeow as pm # type: ignore
 
 mouse = Controller()
 client = Client()
-
-
 
 class Offsets:
     dwEntityList = client.offset('dwEntityList')
@@ -24,12 +21,9 @@ class Offsets:
     dwViewMatrix = client.offset('dwViewMatrix')
     dwViewAngles = client.offset('dwViewAngles')
 
-    m_pGameSceneNode = client.clientdll('C_BaseEntity', 'm_pGameSceneNode')
-    m_vecVelocity = client.clientdll('C_BaseEntity', 'm_vecVelocity')
     m_iIDEntIndex = client.clientdll('C_CSPlayerPawnBase', 'm_iIDEntIndex')
     m_iTeamNum = client.clientdll('C_BaseEntity', 'm_iTeamNum')
     m_iHealth = client.clientdll('C_BaseEntity', 'm_iHealth')
-    m_iszPlayerName = client.clientdll('CBasePlayerController', 'm_iszPlayerName')
     m_hPlayerPawn = client.clientdll('CCSPlayerController', 'm_hPlayerPawn')
     m_vOldOrigin = client.clientdll('C_BasePlayerPawn', 'm_vOldOrigin')
 
@@ -50,11 +44,6 @@ class Entity:
     def position(self):
         return pm.r_vec3(self.pr, self.entity + Offsets.m_vOldOrigin)
     
-    @property
-    def velocity(self):
-        return pm.r_float(self.pr, self.entity + Offsets.m_vecVelocity)
-        
-
 class Colors:
     white = pm.get_color("white")
     black = pm.get_color("black")
@@ -108,7 +97,6 @@ class Pyhl:
                     entEntry = pm.r_int64(self.pr, entList + 0x8 * (entityId >> 9) + 0x10)
                     entity = pm.r_int64(self.pr, entEntry + 120 * (entityId & 0x1FF))
                     ent = Entity(self.pr, entity)
-
                     playerTeam = pm.r_int(self.pr, player + Offsets.m_iTeamNum)
 
                     if ent.team != playerTeam:  # NORMAL MATCHES
@@ -125,7 +113,6 @@ class Pyhl:
             except:
                 time.sleep(0.03)
 
-        
     def headlock(self, entpos, selfpos):
         selfx = selfpos['x']
         selfy = selfpos['y']
@@ -143,16 +130,13 @@ class Pyhl:
         theta = math.asin(sin_theta) * (180/math.pi)
         if entx - selfx < 0:
             theta = 180 - theta
-
-        targetYaw = theta # - viewAngle[1]
+        targetYaw = theta 
         while targetYaw > 180:
             targetYaw -= 360
         while targetYaw < -180:
             targetYaw += 360
 
         return targetPitch, targetYaw
-
-
 
     def hl(self, entpos, selfpos):
         movePerDegree = self.movePerDegree
@@ -188,8 +172,6 @@ class Pyhl:
 
             pm.end_drawing()
             
-   
-        
 if __name__ == '__main__':
     print('Connecting...')
     time.sleep(1)
@@ -200,7 +182,6 @@ if __name__ == '__main__':
     tbt = threading.Thread(target=pyhl.triggerBot)
     pt = threading.Thread(target=pyhl.paint)
 
-
     oot.start()
     tbt.start()
     pt.start()
@@ -210,5 +191,3 @@ if __name__ == '__main__':
     pt.join()
 
     
-
-
