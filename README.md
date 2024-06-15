@@ -4,7 +4,7 @@ A simple cs2 headlock + triggerbot fully written in python without memory writin
 Only work well with unscoped weapons for now.
 
 ## Safe?
-I personally have not been banned using it. However, use at your own risk.
+I have not been banned using it. However, use at your own risk.
 
 ## How to use:
 * Download source code of [PyMeow](https://github.com/qb-0/pyMeow) (or use the one provided)
